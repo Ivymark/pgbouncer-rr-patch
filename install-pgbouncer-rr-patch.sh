@@ -64,6 +64,7 @@ for file in $NEWFILES
 do
    echo -n "$file "
    cp $PATCHDIR/$file $PGDIR/$file || patchstatus=1
+   echo "$file copied"
 done
 echo
 
