@@ -39,6 +39,7 @@ for file in $MERGEFILES
 do
    echo Merging pgbouncer-rr changes to: $PGDIR/$file
    patch -d $PGDIR -f -b -p1 < $PATCHDIR/$file.diff || patchstatus=1
+   echo "Patch status; $patchstatus"
 done
 
 
