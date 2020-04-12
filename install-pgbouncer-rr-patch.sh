@@ -52,9 +52,6 @@ NEWFILES="\
    users.txt\
    rewrite_query.py\
    routing_rules.py\
-   images/diagram1.jpg\
-   images/diagram2-routing.jpg\
-   images/diagram3-rewrite.jpg\
    src/pycall.c\
    src/rewrite_query.c\
    src/route_connection.c\
