@@ -1,5 +1,5 @@
 --- ../pgbouncer/src/client.c	2020-04-12 12:53:20.000000000 +0300
-+++ src/client.c	2020-04-12 20:34:12.000000000 +0300
++++ ./src/client.c	2020-04-12 20:34:12.000000000 +0300
 @@ -695,6 +695,16 @@
  	if (client->pool->db->admin)
  		return admin_handle_client(client, pkt);
