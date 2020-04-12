@@ -43,7 +43,7 @@ done
 
 
 # copy pgbouncer-rr source files
-mkdir -p $PGDIR/images
+mkdir -p $PGDIR
 NEWFILES="\
    README.md\
    LICENSE.txt\
