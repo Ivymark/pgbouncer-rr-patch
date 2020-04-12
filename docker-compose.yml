@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  pgbouncer-rr-patch:
+    image: pgbouncer-rr-patch
+    build: .
+    ports:
+      - 5432
