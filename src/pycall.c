@@ -109,19 +109,19 @@ char *pycall(PgSocket *client, char *username, char *query_str, bool idle_tx, ch
 	}
 	PyTuple_SetItem(pArgs, 1, pValue);
 
-	pValue = PyString_FromString(idle_tx);
+	pValue = PyBool_FromLong(idle_tx);
 	if (pValue == NULL) {
 		slog_error(client, "Python module <%s>: out of memory", py_module);
 		goto finish;
 	}
 	PyTuple_SetItem(pArgs, 2, pValue);
-	
-	pValue = PyString_FromString(query_str);
-	if (pValue == NULL) {
-		slog_error(client, "Python module <%s>: out of memory", py_module);
-		goto finish;
-	}
-	PyTuple_SetItem(pArgs, 1, pValue);
+
+	// pValue = PyString_FromString(query_str);
+	// if (pValue == NULL) {
+	// 	slog_error(client, "Python module <%s>: out of memory", py_module);
+	// 	goto finish;
+	// }
+	// PyTuple_SetItem(pArgs, 1, pValue);
 
 	pValue = PyObject_CallObject(pFunc, pArgs);
 	if (pValue == NULL) {
