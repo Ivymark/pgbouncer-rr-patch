@@ -18,7 +18,7 @@ This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS O
 #include "bouncer.h"
 #include <usual/pgutil.h>
 
-char *pycall(PgSocket *client, char *username, char *query_str, bool idle_tx, char *py_file,
+char *pycall(PgSocket *client, char *username, char *query_str, char *py_file,
 		char* py_function) {
 	PyObject *pName = NULL, *pModule = NULL, *pFunc = NULL;
 	PyObject *pArgs = NULL, *pValue = NULL;
@@ -108,14 +108,7 @@ char *pycall(PgSocket *client, char *username, char *query_str, bool idle_tx, ch
 		goto finish;
 	}
 	PyTuple_SetItem(pArgs, 1, pValue);
-
-	pValue = PyBool_FromLong((long)idle_tx);
-	if (pValue == NULL) {
-		slog_error(client, "Python module <%s>: out of memory", py_module);
-		goto finish;
-	}
-	PyTuple_SetItem(pArgs, 2, pValue);
-
+	
 	// pValue = PyString_FromString(query_str);
 	// if (pValue == NULL) {
 	// 	slog_error(client, "Python module <%s>: out of memory", py_module);
