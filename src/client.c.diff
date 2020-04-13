@@ -1,5 +1,5 @@
 --- ../pgbouncer/src/client.c	2020-04-12 12:53:20.000000000 +0300
-+++ ./src/client.c	2020-04-13 10:31:10.000000000 +0300
++++ ./src/client.c	2020-04-13 10:37:41.000000000 +0300
 @@ -1,3 +1,4 @@
 +
  /*
@@ -14,7 +14,7 @@
  	switch (pkt->type) {
  
  	/* one-packet queries */
-@@ -695,6 +696,22 @@
+@@ -695,6 +696,23 @@
  	if (client->pool->db->admin)
  		return admin_handle_client(client, pkt);
  
@@ -24,6 +24,7 @@
 +		in_tx = 1;
 +		slog_info(client, "SKIPPING ROUTING RULES: client is trnsacting");
 +		slog_info(client, "in_tx is set to %d", in_tx);
++		sbuf_prepare_send(sbuf, &client->link->sbuf, pkt->len);
 +		return true;
 +	}
 +	if (pkt->type == 'Q' || pkt->type == 'P') {
