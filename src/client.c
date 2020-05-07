@@ -632,6 +632,7 @@ static bool handle_client_work(PgSocket *client, PktHdr *pkt)
 	SBuf *sbuf = &client->sbuf;
 	int rfq_delta = 0;
 	bool in_tx;
+	long last_tx_time;
 	switch (pkt->type) {
 
 	/* one-packet queries */
@@ -699,11 +700,28 @@ static bool handle_client_work(PgSocket *client, PktHdr *pkt)
 	/* pgbouncer-rr extensions: query rewrite & client connection routing */
 	in_tx = 0;
 	if(client->link && client->link->idle_tx) {
+		last_tx_time = (long)time();
+		slog(client, "last transaction time on this connection is %d", last_tx_time);
 		in_tx = 1;
 		slog_info(client, "SKIPPING ROUTING RULES: client is trnsacting");
 		slog_info(client, "in_tx is set to %d", in_tx);
+		if (rfq_delta) {
+			client->expect_rfq_count += rfq_delta;
+		}
+
+		client->pool->stats.client_bytes += pkt->len;
+
+		/* tag the server as dirty */
+		client->link->ready = false;
+		client->link->idle_tx = false;
+
+		/* forward the packet */
+		sbuf_prepare_send(sbuf, &client->link->sbuf, pkt->len);
+		return true;
 	}
-	if ((pkt->type == 'Q' || pkt->type == 'P') && !in_tx) {
+	
+	if (pkt->type == 'Q' || pkt->type == 'P') {
+		slog_info(client, "Conditions for rr patch met");
 		if (!rewrite_query(client, pkt)) {
 			return false;
 		}
