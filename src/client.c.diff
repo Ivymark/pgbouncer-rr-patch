@@ -1,5 +1,5 @@
 --- ../pgbouncer/src/client.c	2020-04-12 12:53:20.000000000 +0300
-+++ ./src/client.c	2020-05-07 12:08:01.000000000 +0300
++++ ./src/client.c	2020-05-07 12:21:16.000000000 +0300
 @@ -1,3 +1,4 @@
 +
  /*
@@ -22,8 +22,8 @@
 +	/* pgbouncer-rr extensions: query rewrite & client connection routing */
 +	in_tx = 0;
 +	if(client->link && client->link->idle_tx) {
-+		last_tx_time = (long)time();
-+		slog(client, "last transaction time on this connection is %d", last_tx_time);
++		last_tx_time = (long)time(NULL);
++		slog_info(client, "last transaction time on this connection is %d", last_tx_time);
 +		in_tx = 1;
 +		slog_info(client, "SKIPPING ROUTING RULES: client is trnsacting");
 +		slog_info(client, "in_tx is set to %d", in_tx);

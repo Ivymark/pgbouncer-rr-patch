@@ -700,8 +700,8 @@ static bool handle_client_work(PgSocket *client, PktHdr *pkt)
 	/* pgbouncer-rr extensions: query rewrite & client connection routing */
 	in_tx = 0;
 	if(client->link && client->link->idle_tx) {
-		last_tx_time = (long)time();
-		slog(client, "last transaction time on this connection is %d", last_tx_time);
+		last_tx_time = (long)time(NULL);
+		slog_info(client, "last transaction time on this connection is %d", last_tx_time);
 		in_tx = 1;
 		slog_info(client, "SKIPPING ROUTING RULES: client is trnsacting");
 		slog_info(client, "in_tx is set to %d", in_tx);
