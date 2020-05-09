@@ -631,7 +631,6 @@ static bool handle_client_work(PgSocket *client, PktHdr *pkt)
 {
 	SBuf *sbuf = &client->sbuf;
 	int rfq_delta = 0;
-	long last_tx_time = 0;
 	switch (pkt->type) {
 
 	/* one-packet queries */
@@ -697,21 +696,15 @@ static bool handle_client_work(PgSocket *client, PktHdr *pkt)
 		return admin_handle_client(client, pkt);
 
 	/* pgbouncer-rr extensions: query rewrite & client connection routing */
+	if(client->link) {
+		slog_info(client, "DBEELINE - client link is in state %s", client->link->state);
+	}
 	if(client->link && client->link->idle_tx) {
-		last_tx_time = (long)time(NULL);
-		slog_info(client, "last transaction time on this connection is %d", last_tx_time);
 		slog_info(client, "SKIPPING ROUTING RULES: client is transacting");
 		return skip_query_interception(client, pkt, sbuf, rfq_delta);
 	}
 	
 	if (pkt->type == 'Q' || pkt->type == 'P') {
-		slog_info(client, "DBEELINE Checking for last_tx_time %d", last_tx_time);
-		slog_info(client, "DBEELINE current timestamp is %d", (long)time(NULL));
-		slog_info(client, "DBEELINE time passed since TX committed %d", ((long)time(NULL) - last_tx_time));
-		if((long)time(NULL) - last_tx_time < 30000) {
-			slog_info(client, "Sticking to master, time since last commit is %d", (long)time(NULL) - last_tx_time);
-			return skip_query_interception(client, pkt, sbuf, rfq_delta);
-		}
 		slog_info(client, "Conditions for rr patch met");
 		if (!rewrite_query(client, pkt)) {
 			return false;
