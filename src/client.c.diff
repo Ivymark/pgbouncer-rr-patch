@@ -1,5 +1,5 @@
 --- ../pgbouncer/src/client.c	2020-04-12 12:53:20.000000000 +0300
-+++ ./src/client.c	2020-05-09 22:18:47.000000000 +0300
++++ ./src/client.c	2020-05-09 22:24:02.000000000 +0300
 @@ -1,3 +1,4 @@
 +
  /*
@@ -18,7 +18,7 @@
  		return admin_handle_client(client, pkt);
  
 +	/* pgbouncer-rr extensions: query rewrite & client connection routing */
-+	if(client->link) {
++	if(client->link && client->link->state) {
 +		slog_info(client, "DBEELINE - client link is in state %s", client->link->state);
 +	}
 +	if(client->link && client->link->idle_tx) {

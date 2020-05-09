@@ -696,7 +696,7 @@ static bool handle_client_work(PgSocket *client, PktHdr *pkt)
 		return admin_handle_client(client, pkt);
 
 	/* pgbouncer-rr extensions: query rewrite & client connection routing */
-	if(client->link) {
+	if(client->link && client->link->state) {
 		slog_info(client, "DBEELINE - client link is in state %s", client->link->state);
 	}
 	if(client->link && client->link->idle_tx) {
