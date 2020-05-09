@@ -702,22 +702,11 @@ static bool handle_client_work(PgSocket *client, PktHdr *pkt)
 		slog_info(client, "last transaction time on this connection is %d", last_tx_time);
 		slog_info(client, "SKIPPING ROUTING RULES: client is transacting");
 		return skip_query_interception(client, pkt, sbuf, rfq_delta);
-		// if (rfq_delta) {
-		// 	client->expect_rfq_count += rfq_delta;
-		// }
-
-		// client->pool->stats.client_bytes += pkt->len;
-
-		// /* tag the server as dirty */
-		// client->link->ready = false;
-		// client->link->idle_tx = false;
-
-		// /* forward the packet */
-		// sbuf_prepare_send(sbuf, &client->link->sbuf, pkt->len);
-		// return true;
 	}
 	
 	if (pkt->type == 'Q' || pkt->type == 'P') {
+		slog_info(client, "DBEELINE Checking for last_tx_time %d", last_tx_time);
+		slog_info(client, "DBEELINE current timestamp is %d", (long)time(NULL));
 		slog_info(client, "DBEELINE time passed since TX committed %d", ((long)time(NULL) - last_tx_time));
 		if((long)time(NULL) - last_tx_time < 30000) {
 			slog_info(client, "Sticking to master, time since last commit is %d", (long)time(NULL) - last_tx_time);
