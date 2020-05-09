@@ -718,9 +718,9 @@ static bool handle_client_work(PgSocket *client, PktHdr *pkt)
 	}
 	
 	if (pkt->type == 'Q' || pkt->type == 'P') {
-		slog_info(client, 'DBEELINE time passed since TX committed %d', ((long)time(NULL) - last_tx_time));
+		slog_info(client, "DBEELINE time passed since TX committed %d", ((long)time(NULL) - last_tx_time));
 		if((long)time(NULL) - last_tx_time < 30000) {
-			slog_info(client, 'Sticking to master, time since last commit is %d', (long)time(NULL) - last_tx_time);
+			slog_info(client, "Sticking to master, time since last commit is %d", (long)time(NULL) - last_tx_time);
 			return skip_query_interception(client, pkt, sbuf, rfq_delta);
 		}
 		slog_info(client, "Conditions for rr patch met");
