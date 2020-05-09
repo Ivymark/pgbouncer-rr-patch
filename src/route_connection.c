@@ -105,7 +105,7 @@ bool route_client_connection(PgSocket *client, PktHdr *pkt) {
 }
 
 /* DBEELINE Utility  */
-bool skip_query_interception(PgSocket *client, PktHdr *pkt, int rfq_delta) {
+bool skip_query_interception(PgSocket *client, PktHdr *pkt, SBuf sbuf, int rfq_delta) {
 		if (rfq_delta) {
 			client->expect_rfq_count += rfq_delta;
 		}

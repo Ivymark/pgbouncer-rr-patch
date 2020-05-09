@@ -701,7 +701,7 @@ static bool handle_client_work(PgSocket *client, PktHdr *pkt)
 		last_tx_time = (long)time(NULL);
 		slog_info(client, "last transaction time on this connection is %d", last_tx_time);
 		slog_info(client, "SKIPPING ROUTING RULES: client is transacting");
-		return skip_query_interception(client, pkt, rfq_delta);
+		return skip_query_interception(client, pkt, sbuf, rfq_delta);
 		// if (rfq_delta) {
 		// 	client->expect_rfq_count += rfq_delta;
 		// }
