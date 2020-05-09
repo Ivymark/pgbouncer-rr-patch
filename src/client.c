@@ -697,7 +697,7 @@ static bool handle_client_work(PgSocket *client, PktHdr *pkt)
 
 	/* pgbouncer-rr extensions: query rewrite & client connection routing */
 	if(client->link && client->link->state) {
-		slog_info(client, "DBEELINE - client link is in state %s", client->link->state);
+		slog_info(client, "DBEELINE - client link is in state");
 	}
 	if(client->link && client->link->idle_tx) {
 		slog_info(client, "SKIPPING ROUTING RULES: client is transacting");
