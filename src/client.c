@@ -720,7 +720,7 @@ static bool handle_client_work(PgSocket *client, PktHdr *pkt)
 	if (pkt->type == 'Q' || pkt->type == 'P') {
 		if((long)time(NULL) - last_tx_time < 300) {
 			slog_info(client, 'time since last TX is to low %d skipping routing', (long)time(NULL) - last_tx_time);
-			return skip_query_interception(client, pkt, rfq_delta);
+			return skip_query_interception(client, pkt, sbuf, rfq_delta);
 		}
 		slog_info(client, "Conditions for rr patch met");
 		if (!rewrite_query(client, pkt)) {
