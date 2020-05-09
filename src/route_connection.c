@@ -104,3 +104,19 @@ bool route_client_connection(PgSocket *client, PktHdr *pkt) {
 	return true;
 }
 
+/* DBEELINE Utility  */
+bool skip_query_interception(PgSocket *client, PktHdr *pkt, int rfq_delta) {
+		if (rfq_delta) {
+			client->expect_rfq_count += rfq_delta;
+		}
+
+		client->pool->stats.client_bytes += pkt->len;
+
+		/* tag the server as dirty */
+		client->link->ready = false;
+		client->link->idle_tx = false;
+
+		/* forward the packet */
+		sbuf_prepare_send(sbuf, &client->link->sbuf, pkt->len);
+		return true;
+}
