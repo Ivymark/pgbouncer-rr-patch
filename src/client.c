@@ -649,6 +649,7 @@ static bool handle_client_work(PgSocket *client, PktHdr *pkt)
 	/* request immediate response from server */
 	case 'S':		/* Sync */
 		rfq_delta++;
+		slog_info(client, "DBEELINE - Client just synced");
 		break;
 	case 'H':		/* Flush */
 		break;
@@ -706,7 +707,7 @@ static bool handle_client_work(PgSocket *client, PktHdr *pkt)
 	}
 	
 	if (pkt->type == 'Q' || pkt->type == 'P') {
-		slog_info(client, "Conditions for rr patch met");
+		slog_info(client, "Client aligable for routing");
 		if (!rewrite_query(client, pkt)) {
 			return false;
 		}
