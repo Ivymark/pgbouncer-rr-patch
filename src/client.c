@@ -697,13 +697,6 @@ static bool handle_client_work(PgSocket *client, PktHdr *pkt)
 		return admin_handle_client(client, pkt);
 
 	/* pgbouncer-rr extensions: query rewrite & client connection routing */
-	if(client->link) {
-		slog_info(client, "DBEELINE - client link is in ready state %d", client->link->ready);
-		slog_info(client, "DBEELINE - client idle in tx %d", client->link->idle_tx);
-		slog_info(client, "DBEELINE - current last tx time is %d", client->last_tx_timestamp);
-		client->last_tx_timestamp = time(NULL);
-		slog_info(client, "DBEELINE - client last tx time is now set to %d", client->last_tx_timestamp);
-	}
 	if(client->link && client->link->idle_tx) {
 		slog_info(client, "SKIPPING ROUTING RULES: client is transacting");
 		slog_info(client, "DBEELINE - current last tx time is %d", client->last_tx_timestamp);
