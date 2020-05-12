@@ -698,19 +698,19 @@ static bool handle_client_work(PgSocket *client, PktHdr *pkt)
 
 	/* pgbouncer-rr extensions: query rewrite & client connection routing */	
 	if(client->link && client->link->idle_tx) {
-		slog_info(client, "SKIPPING ROUTING RULES: client is transacting");
-		slog_info(client, "DBEELINE - current last tx time is %d", client->last_tx_timestamp);
+		slog_info(client, "DBEELINE - server connection is idle in transaction, skipping routing rules");
+		slog_info(client, "DBEELINE - client last transaction timestamp is %d", client->last_tx_timestamp);
 		client->last_tx_timestamp = time(NULL);
-		slog_info(client, "DBEELINE - client last tx time is now set to %d", client->last_tx_timestamp);
+		slog_info(client, "DBEELINE - client last transaction time is now set to %d", client->last_tx_timestamp);
 		return skip_query_interception(client, pkt, sbuf, rfq_delta);
 	}
 	
 	if (pkt->type == 'Q' || pkt->type == 'P') {
 		if((long)client->last_tx_timestamp > 0 && (long)time(NULL) - (long)client->last_tx_timestamp < 60) {
-			slog_info(client, "Client transacted, sticking to master");
+			slog_info(client, "DBEELINE - time since transaction ended is %d. skipping routing rules", (long)time(NULL) - (long)client->last_tx_timestamp );
 			return skip_query_interception(client, pkt, sbuf, rfq_delta);
 		}
-		slog_info(client, "Client aligable for routing");
+		slog_info(client, "DBEELINE client aligable for routing, activating routing rules");
 		if (!rewrite_query(client, pkt)) {
 			return false;
 		}
