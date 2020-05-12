@@ -1,5 +1,5 @@
 --- ../pgbouncer/src/client.c	2020-04-12 12:53:20.000000000 +0300
-+++ ./src/client.c	2020-05-12 21:22:45.000000000 +0300
++++ ./src/client.c	2020-05-12 21:47:09.000000000 +0300
 @@ -1,3 +1,4 @@
 +
  /*
@@ -30,7 +30,7 @@
 +		slog_info(client, "DBEELINE - client link is in ready state %d", client->link->ready);
 +		slog_info(client, "DBEELINE - client idle in tx %d", client->link->idle_tx);
 +		slog_info(client, "DBEELINE - current last tx time is %d", client->last_tx_timestamp);
-+		client->last_tx_timestamp = (int)time(NULL);
++		client->last_tx_timestamp = time(NULL);
 +		slog_info(client, "DBEELINE - client last tx time is now set to %d", client->last_tx_timestamp);
 +	}
 +	if(client->link && client->link->idle_tx) {
