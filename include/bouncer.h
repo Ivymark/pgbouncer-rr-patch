@@ -87,6 +87,12 @@ typedef struct PktHdr PktHdr;
 
 extern int cf_sbuf_len;
 
+
+/* pgbouncer-rr extensions */
+#include "pycall.h"
+#include "route_connection.h"
+#include "rewrite_query.h"
+
 #include "util.h"
 #include "iobuf.h"
 #include "sbuf.h"
