@@ -341,7 +341,7 @@ struct PgSocket {
 
 	SocketState state:8;	/* this also specifies socket location */
 
-	long last_tx_timestamp:0 /* DBEELINE - client attribute for read after write race condition */
+	long last_tx_timestamp:0; /* DBEELINE - client attribute for read after write race condition */
 	bool ready:1;		/* server: accepts new query */
 	bool idle_tx:1;		/* server: idling in tx */
 	bool close_needed:1;	/* server: this socket must be closed ASAP */
