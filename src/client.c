@@ -707,10 +707,10 @@ static bool handle_client_work(PgSocket *client, PktHdr *pkt)
 	
 	if (pkt->type == 'Q' || pkt->type == 'P') {
 		if((long)client->last_tx_timestamp > 0 && (long)time(NULL) - (long)client->last_tx_timestamp < 60) {
-			slog_info(client, "DBEELINE - time since transaction ended is %d. skipping routing rules", (long)time(NULL) - (long)client->last_tx_timestamp );
+			slog_info(client, "DBEELINE - time since transaction ended is %d seconds. skipping routing rules", (long)time(NULL) - (long)client->last_tx_timestamp );
 			return skip_query_interception(client, pkt, sbuf, rfq_delta);
 		}
-		slog_info(client, "DBEELINE client aligable for routing, activating routing rules");
+		slog_info(client, "DBEELINE - client aligable for routing, activating routing rules");
 		if (!rewrite_query(client, pkt)) {
 			return false;
 		}
