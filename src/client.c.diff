@@ -1,5 +1,5 @@
 --- ../pgbouncer/src/client.c	2020-04-12 12:53:20.000000000 +0300
-+++ ./src/client.c	2020-05-12 21:47:09.000000000 +0300
++++ ./src/client.c	2020-05-12 22:20:24.000000000 +0300
 @@ -1,3 +1,4 @@
 +
  /*
@@ -21,7 +21,7 @@
  		break;
  	case 'H':		/* Flush */
  		break;
-@@ -695,6 +696,27 @@
+@@ -695,6 +696,34 @@
  	if (client->pool->db->admin)
  		return admin_handle_client(client, pkt);
  
@@ -35,10 +35,17 @@
 +	}
 +	if(client->link && client->link->idle_tx) {
 +		slog_info(client, "SKIPPING ROUTING RULES: client is transacting");
++		slog_info(client, "DBEELINE - current last tx time is %d", client->last_tx_timestamp);
++		client->last_tx_timestamp = time(NULL);
++		slog_info(client, "DBEELINE - client last tx time is now set to %d", client->last_tx_timestamp);
 +		return skip_query_interception(client, pkt, sbuf, rfq_delta);
 +	}
 +	
 +	if (pkt->type == 'Q' || pkt->type == 'P') {
++		if((long)client->last_tx_timestamp > 0 && (long)time(NULL) - (long)client->last_tx_timestamp > 60) {
++			slog_info(client, "Client transacted, sticking to master");
++			return skip_query_interception(client, pkt, sbuf, rfq_delta);
++		}
 +		slog_info(client, "Client aligable for routing");
 +		if (!rewrite_query(client, pkt)) {
 +			return false;
