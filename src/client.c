@@ -696,7 +696,7 @@ static bool handle_client_work(PgSocket *client, PktHdr *pkt)
 	if (client->pool->db->admin)
 		return admin_handle_client(client, pkt);
 
-	/* pgbouncer-rr extensions: query rewrite & client connection routing */
+	/* pgbouncer-rr extensions: query rewrite & client connection routing */	
 	if(client->link && client->link->idle_tx) {
 		slog_info(client, "SKIPPING ROUTING RULES: client is transacting");
 		slog_info(client, "DBEELINE - current last tx time is %d", client->last_tx_timestamp);
@@ -706,7 +706,7 @@ static bool handle_client_work(PgSocket *client, PktHdr *pkt)
 	}
 	
 	if (pkt->type == 'Q' || pkt->type == 'P') {
-		if((long)client->last_tx_timestamp > 0 && (long)time(NULL) - (long)client->last_tx_timestamp > 60) {
+		if((long)client->last_tx_timestamp > 0 && (long)time(NULL) - (long)client->last_tx_timestamp < 60) {
 			slog_info(client, "Client transacted, sticking to master");
 			return skip_query_interception(client, pkt, sbuf, rfq_delta);
 		}
