@@ -1,9 +1,6 @@
---- /home/ec2-user/TEST/pgbouncer/include/bouncer.h	2015-12-08 17:31:44.635667172 -0500
-+++ ./include/bouncer.h	2015-12-08 14:57:27.525236201 -0500
-@@ -88,12 +88,17 @@ typedef struct PgStats PgStats;
- typedef union PgAddr PgAddr;
- typedef enum SocketState SocketState;
- typedef struct PktHdr PktHdr;
+--- ../pgbouncer/include/bouncer.h	2020-04-12 09:52:43.000000000 +0300
++++ include/bouncer.h	2020-06-08 21:06:41.000000000 +0300
+@@ -87,6 +87,11 @@
  
  extern int cf_sbuf_len;
  
@@ -15,13 +12,17 @@
  #include "util.h"
  #include "iobuf.h"
  #include "sbuf.h"
- #include "pktbuf.h"
- #include "varcache.h"
- #include "dnslookup.h"
-@@ -457,12 +462,17 @@ extern int cf_tcp_defer_accept;
+@@ -334,7 +339,8 @@
+ 	int client_auth_type;	/* auth method decided by hba */
  
- extern int cf_log_connections;
- extern int cf_log_disconnections;
+ 	SocketState state:8;	/* this also specifies socket location */
+-
++	
++	time_t last_tx_timestamp; /* DBEELINE - client attribute for read after write race condition */
+ 	bool ready:1;		/* server: accepts new query */
+ 	bool idle_tx:1;		/* server: idling in tx */
+ 	bool close_needed:1;	/* server: this socket must be closed ASAP */
+@@ -468,6 +474,11 @@
  extern int cf_log_pooler_errors;
  extern int cf_application_name_add_host;
  
@@ -33,6 +34,3 @@
  extern int cf_client_tls_sslmode;
  extern char *cf_client_tls_protocols;
  extern char *cf_client_tls_ca_file;
- extern char *cf_client_tls_cert_file;
- extern char *cf_client_tls_key_file;
- extern char *cf_client_tls_ciphers;
