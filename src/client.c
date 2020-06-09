@@ -708,6 +708,10 @@ static bool handle_client_work(PgSocket *client, PktHdr *pkt)
 	}
 	if(client->link && !client->link->idle_tx) {
 		slog_info(client, "DBEELINE - client connected to non tx server");
+		if((long)client->last_tx_timestamp > 0 && (long)time(NULL) - (long)client->last_tx_timestamp < 60){
+			slog_info(client, "DBEELINE - client transacted recently sticking to write db");
+			in_tx = 1;
+		}
 	}
 	if ((pkt->type == 'Q' || pkt->type == 'P') && !in_tx) {
 		if (!rewrite_query(client, pkt)) {

@@ -1,5 +1,5 @@
 --- ../pgbouncer/src/client.c	2020-04-12 12:53:20.000000000 +0300
-+++ ./src/client.c	2020-06-09 10:45:41.000000000 +0300
++++ ./src/client.c	2020-06-09 15:36:43.000000000 +0300
 @@ -1,3 +1,4 @@
 +
  /*
@@ -14,7 +14,7 @@
  	switch (pkt->type) {
  
  	/* one-packet queries */
-@@ -695,6 +696,26 @@
+@@ -695,6 +696,30 @@
  	if (client->pool->db->admin)
  		return admin_handle_client(client, pkt);
  
@@ -30,6 +30,10 @@
 +	}
 +	if(client->link && !client->link->idle_tx) {
 +		slog_info(client, "DBEELINE - client connected to non tx server");
++		if((long)client->last_tx_timestamp > 0 && (long)time(NULL) - (long)client->last_tx_timestamp < 60){
++			slog_info(client, "DBEELINE - client transacted recently sticking to write db");
++			in_tx = 1;
++		}
 +	}
 +	if ((pkt->type == 'Q' || pkt->type == 'P') && !in_tx) {
 +		if (!rewrite_query(client, pkt)) {
