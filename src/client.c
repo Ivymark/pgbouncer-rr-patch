@@ -700,8 +700,7 @@ static bool handle_client_work(PgSocket *client, PktHdr *pkt)
 	in_tx = 0;
 	if(client->link && client->link->idle_tx) {
 		in_tx = 1;
-		slog_info(client, "SKIPPING ROUTING RULES: client is trnsacting");
-		slog_info(client, "in_tx is set to %d", in_tx);
+		slog_info(client, "DBEELINE - Skipping routing rules, client is trnsacting");
 		slog_info(client, "DBEELINE - client last idle transaction timestamp is %d", client->last_tx_timestamp);
 		client->last_tx_timestamp = time(NULL);
 		slog_info(client, "DBEELINE - client last transaction time is now set to %d", client->last_tx_timestamp);
