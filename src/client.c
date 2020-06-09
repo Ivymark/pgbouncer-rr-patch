@@ -706,6 +706,9 @@ static bool handle_client_work(PgSocket *client, PktHdr *pkt)
 		client->last_tx_timestamp = time(NULL);
 		slog_info(client, "DBEELINE - client last transaction time is now set to %d", client->last_tx_timestamp);
 	}
+	if(client->link && !client->link->idle_tx) {
+		slog_info(client, "DBEELINE - client connected to non tx server");
+	}
 	if ((pkt->type == 'Q' || pkt->type == 'P') && !in_tx) {
 		if (!rewrite_query(client, pkt)) {
 			return false;
